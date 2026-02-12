@@ -13,16 +13,19 @@
             overflow: hidden;
             position: relative;
             cursor: default;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
         .container {
             background: white;
             border: 4px solid #ff1744;
             border-radius: 20px;
-            padding: 50px 30px;
+            padding: 50px 40px;
             text-align: center;
             box-shadow: 0 15px 40px rgba(255, 23, 68, 0.3);
-            max-width: 500px;
-            margin: 60px auto;
+            max-width: 520px;
+            width: 90%;
             position: relative;
             z-index: 10;
         }
@@ -39,11 +42,11 @@
         }
         .buttons {
             position: relative;
-            min-height: 200px;
+            min-height: 280px; /* space for dodging around center */
             margin: 50px 0;
         }
         button {
-            padding: 18px 50px;
+            padding: 18px 60px;
             font-size: 1.5rem;
             border: none;
             border-radius: 12px;
@@ -52,14 +55,13 @@
             position: absolute;
             user-select: none;
             box-shadow: 0 6px 15px rgba(0,0,0,0.15);
-            pointer-events: auto; /* but we'll block No via JS */
         }
         #yesBtn {
             background: #4caf50;
             color: white;
             left: 50%;
             transform: translateX(-50%);
-            top: 20px;
+            top: 20%;
         }
         #yesBtn:hover {
             background: #388e3c;
@@ -69,8 +71,8 @@
             background: #f44336;
             color: white;
             left: 50%;
-            top: 110px;
-            transform: translateX(-50%);
+            top: 55%;
+            transform: translate(-50%, -50%);
         }
         .heart {
             position: absolute;
@@ -111,7 +113,7 @@
     </div>
 </div>
 
-<!-- Floating hearts -->
+<!-- Floating hearts (positioned relative to viewport) -->
 <div class="heart" style="left: 10%; top: 15%; animation-delay: 0s;">❤️</div>
 <div class="heart" style="left: 88%; top: 22%; animation-delay: 1.2s;">💖</div>
 <div class="heart" style="left: 18%; top: 78%; animation-delay: 2.8s;">💕</div>
@@ -124,10 +126,11 @@
     const container = document.querySelector('.container');
 
     // ─── Settings ──────────────────────────────────────────────────
-    const SAFE_MARGIN       = 90;       // px — button always stays this far from edges
-    const DODGE_DISTANCE    = 160;      // react when mouse closer than this
-    const STEP_SIZE         = 38;       // how far to move each time (big enough to escape, not too wild)
-    const ANGLE_JITTER      = 55;       // degrees of randomness
+    const SAFE_MARGIN       = 100;
+    const DODGE_DISTANCE    = 170;
+    const STEP_SIZE         = 45;
+    const ANGLE_JITTER      = 65;
+    const CENTER_PULL       = 0.12;
 
     function clamp(val, min, max) {
         return Math.max(min, Math.min(max, val));
@@ -142,20 +145,25 @@
         const dy = btnCY - mouseY;
         const dist = Math.hypot(dx, dy);
 
-        if (dist > DODGE_DISTANCE) return;  // too far → no move
+        if (dist > DODGE_DISTANCE) return;
 
-        // Direction: away from mouse + some random angle
-        let angle = Math.atan2(dy, dx);  // note: atan2(dy, dx) points away
+        let angle = Math.atan2(dy, dx);
         angle += (Math.random() - 0.5) * (ANGLE_JITTER * Math.PI / 180);
 
-        // Move in that direction
-        const moveX = Math.cos(angle) * STEP_SIZE;
-        const moveY = Math.sin(angle) * STEP_SIZE;
+        let moveX = Math.cos(angle) * STEP_SIZE;
+        let moveY = Math.sin(angle) * STEP_SIZE;
+
+        const centerX = window.innerWidth / 2;
+        const centerY = window.innerHeight / 2;
+        const toCenterX = (centerX - btnCX) * CENTER_PULL;
+        const toCenterY = (centerY - btnCY) * CENTER_PULL;
+
+        moveX += toCenterX;
+        moveY += toCenterY;
 
         let newLeft = rect.left + moveX;
         let newTop  = rect.top + moveY;
 
-        // Hard clamp — keep fully visible with margin
         const maxLeft = window.innerWidth - rect.width - SAFE_MARGIN;
         const maxTop  = window.innerHeight - rect.height - SAFE_MARGIN;
 
@@ -167,7 +175,6 @@
         noBtn.style.transform = 'none';
     }
 
-    // ─── Core logic: constantly check mouse position ──────────────
     let mouseX = window.innerWidth / 2;
     let mouseY = window.innerHeight / 2;
 
@@ -177,53 +184,27 @@
         dodgeFromMouse(mouseX, mouseY);
     });
 
-    // Also run dodge check ~every frame when mouse is close (prevents entering)
     function checkLoop() {
-        const rect = noBtn.getBoundingClientRect();
-        const btnCX = rect.left + rect.width / 2;
-        const btnCY = rect.top + rect.height / 2;
-        const dist = Math.hypot(btnCX - mouseX, btnCY - mouseY);
-
-        if (dist < DODGE_DISTANCE + 40) {  // slightly larger zone for loop
-            dodgeFromMouse(mouseX, mouseY);
-        }
+        dodgeFromMouse(mouseX, mouseY);
         requestAnimationFrame(checkLoop);
     }
     checkLoop();
 
-    // Block any accidental click/hover attempts
     noBtn.addEventListener('mouseover', e => {
         e.preventDefault();
-        e.stopPropagation();
-        dodgeFromMouse(mouseX, mouseY);  // extra kick
-    });
-
-    noBtn.addEventListener('mouseenter', () => {
         dodgeFromMouse(mouseX, mouseY);
     });
-
+    noBtn.addEventListener('mouseenter', () => dodgeFromMouse(mouseX, mouseY));
     noBtn.addEventListener('click', e => {
         e.preventDefault();
         dodgeFromMouse(mouseX, mouseY);
     });
 
-    // Yes works normally
     yesBtn.addEventListener('click', () => {
         container.querySelector('.question, .buttons').style.display = 'none';
         successPage.style.display = 'block';
         document.body.style.background = 'linear-gradient(to bottom, #fce4ec, #f8bbd0)';
     });
-
-    // Optional: tiny random wiggle when ignored for >3 seconds (uncomment if wanted)
-    /*
-    let lastDodgeTime = Date.now();
-    setInterval(() => {
-        if (Date.now() - lastDodgeTime > 3000) {
-            dodgeFromMouse(mouseX, mouseY);
-            lastDodgeTime = Date.now();
-        }
-    }, 4000);
-    */
 </script>
 </body>
 </html>
