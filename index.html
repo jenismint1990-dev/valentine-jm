@@ -42,7 +42,7 @@
         }
         .buttons {
             position: relative;
-            min-height: 280px; /* space for dodging around center */
+            min-height: 280px;
             margin: 50px 0;
         }
         button {
@@ -99,7 +99,7 @@
 
 <div class="container">
     <h1>Heyyy! 💕</h1>
-    <p class="question">Will you be my Valentine???? 🥺❤️</p>
+    <p class="question">Will you be my Valentine? 🥺❤️</p>
     <div class="buttons">
         <button id="yesBtn">YES!! 😍</button>
         <button id="noBtn">No 😔</button>
@@ -113,7 +113,7 @@
     </div>
 </div>
 
-<!-- Floating hearts (positioned relative to viewport) -->
+<!-- Floating hearts -->
 <div class="heart" style="left: 10%; top: 15%; animation-delay: 0s;">❤️</div>
 <div class="heart" style="left: 88%; top: 22%; animation-delay: 1.2s;">💖</div>
 <div class="heart" style="left: 18%; top: 78%; animation-delay: 2.8s;">💕</div>
@@ -123,20 +123,19 @@
     const noBtn = document.getElementById('noBtn');
     const yesBtn = document.getElementById('yesBtn');
     const successPage = document.getElementById('successPage');
-    const container = document.querySelector('.container');
 
     // ─── Settings ──────────────────────────────────────────────────
-    const SAFE_MARGIN       = 100;
-    const DODGE_DISTANCE    = 170;
-    const STEP_SIZE         = 45;
-    const ANGLE_JITTER      = 65;
-    const CENTER_PULL       = 0.12;
+    const SAFE_MARGIN    = 120;       // generous margin from edges
+    const DODGE_DISTANCE = 140;       // react only when quite close
+    const MAX_STEP       = 28;        // smaller steps = no overshooting
+    const ANGLE_JITTER   = 70;        // randomness in direction
+    const CENTER_PULL    = 0.18;      // stronger return to center
 
     function clamp(val, min, max) {
         return Math.max(min, Math.min(max, val));
     }
 
-    function dodgeFromMouse(mouseX, mouseY) {
+    function dodge(mouseX, mouseY) {
         const rect = noBtn.getBoundingClientRect();
         const btnCX = rect.left + rect.width / 2;
         const btnCY = rect.top + rect.height / 2;
@@ -147,61 +146,66 @@
 
         if (dist > DODGE_DISTANCE) return;
 
+        // Direction away from mouse + jitter
         let angle = Math.atan2(dy, dx);
         angle += (Math.random() - 0.5) * (ANGLE_JITTER * Math.PI / 180);
 
-        let moveX = Math.cos(angle) * STEP_SIZE;
-        let moveY = Math.sin(angle) * STEP_SIZE;
+        let moveX = Math.cos(angle) * MAX_STEP;
+        let moveY = Math.sin(angle) * MAX_STEP;
 
+        // Pull toward screen center
         const centerX = window.innerWidth / 2;
         const centerY = window.innerHeight / 2;
-        const toCenterX = (centerX - btnCX) * CENTER_PULL;
-        const toCenterY = (centerY - btnCY) * CENTER_PULL;
+        moveX += (centerX - btnCX) * CENTER_PULL;
+        moveY += (centerY - btnCY) * CENTER_PULL;
 
-        moveX += toCenterX;
-        moveY += toCenterY;
-
+        // Apply movement (capped step size already)
         let newLeft = rect.left + moveX;
-        let newTop  = rect.top + moveY;
+        let newTop  = rect.top  + moveY;
 
-        const maxLeft = window.innerWidth - rect.width - SAFE_MARGIN;
+        // Clamp immediately
+        const maxLeft = window.innerWidth  - rect.width  - SAFE_MARGIN;
         const maxTop  = window.innerHeight - rect.height - SAFE_MARGIN;
 
         newLeft = clamp(newLeft, SAFE_MARGIN, maxLeft);
-        newTop  = clamp(newTop, SAFE_MARGIN, maxTop);
+        newTop  = clamp(newTop,  SAFE_MARGIN, maxTop);
 
-        noBtn.style.left = newLeft + 'px';
-        noBtn.style.top  = newTop + 'px';
+        noBtn.style.left = `${newLeft}px`;
+        noBtn.style.top  = `${newTop}px`;
         noBtn.style.transform = 'none';
     }
 
-    let mouseX = window.innerWidth / 2;
-    let mouseY = window.innerHeight / 2;
+    // ─── Mouse tracking ────────────────────────────────────────────
+    let mouse = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
 
     document.addEventListener('mousemove', e => {
-        mouseX = e.clientX;
-        mouseY = e.clientY;
-        dodgeFromMouse(mouseX, mouseY);
+        mouse.x = e.clientX;
+        mouse.y = e.clientY;
+        dodge(mouse.x, mouse.y);
     });
 
-    function checkLoop() {
-        dodgeFromMouse(mouseX, mouseY);
-        requestAnimationFrame(checkLoop);
+    // Gentle continuous check (not too aggressive)
+    function loop() {
+        const rect = noBtn.getBoundingClientRect();
+        const cx = rect.left + rect.width / 2;
+        const cy = rect.top + rect.height / 2;
+        const dist = Math.hypot(cx - mouse.x, cy - mouse.y);
+
+        if (dist < DODGE_DISTANCE + 30) {
+            dodge(mouse.x, mouse.y);
+        }
+        requestAnimationFrame(loop);
     }
-    checkLoop();
+    loop();
 
-    noBtn.addEventListener('mouseover', e => {
-        e.preventDefault();
-        dodgeFromMouse(mouseX, mouseY);
-    });
-    noBtn.addEventListener('mouseenter', () => dodgeFromMouse(mouseX, mouseY));
-    noBtn.addEventListener('click', e => {
-        e.preventDefault();
-        dodgeFromMouse(mouseX, mouseY);
-    });
+    // Extra safety
+    noBtn.addEventListener('mouseenter', () => dodge(mouse.x, mouse.y));
+    noBtn.addEventListener('mouseover',   e => { e.preventDefault(); dodge(mouse.x, mouse.y); });
+    noBtn.addEventListener('click',       e => { e.preventDefault(); dodge(mouse.x, mouse.y); });
 
+    // Yes button
     yesBtn.addEventListener('click', () => {
-        container.querySelector('.question, .buttons').style.display = 'none';
+        document.querySelector('.question, .buttons').style.display = 'none';
         successPage.style.display = 'block';
         document.body.style.background = 'linear-gradient(to bottom, #fce4ec, #f8bbd0)';
     });
