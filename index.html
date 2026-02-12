@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>A Special Question ❤️</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -25,29 +26,32 @@
             text-align: center;
             box-shadow: 0 15px 35px rgba(0,0,0,0.15);
             width: 90%;
-            max-width: 700px; 
-            min-height: 450px;
+            max-width: 500px; 
+            min-height: 500px;
             position: relative;
             z-index: 10;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
 
         .valentine-img {
             width: 100%;
-            max-width: 400px;
+            max-width: 300px;
             height: auto;
             border-radius: 15px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            margin: 0 auto 20px auto;
+            display: block;
         }
 
         h1 {
             color: #d81b60;
             margin-bottom: 10px;
-            font-size: 2.5rem;
+            font-size: 2rem;
         }
 
         .question {
-            font-size: 1.5rem;
+            font-size: 1.2rem;
             color: #444;
             margin-bottom: 30px;
         }
@@ -57,46 +61,33 @@
             justify-content: center;
             align-items: center;
             gap: 20px;
-            height: 100px;
-        }
-
-        .no-button-wrapper {
-            width: 180px; 
-            height: 60px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            flex-wrap: wrap;
         }
 
         button {
-            padding: 15px 35px;
-            font-size: 1.2rem;
+            padding: 15px 30px;
+            font-size: 1.1rem;
             border: none;
             border-radius: 50px;
             cursor: pointer;
             font-weight: bold;
-            transition: transform 0.2s;
+            transition: transform 0.2s, background-color 0.2s;
             white-space: nowrap; 
         }
 
         #yesBtn {
             background-color: #ff4081;
             color: white;
-            z-index: 11;
+            z-index: 100;
             box-shadow: 0 4px 15px rgba(255, 64, 129, 0.3);
-        }
-
-        #yesBtn:hover {
-            transform: scale(1.1);
-            background-color: #f50057;
         }
 
         #noBtn {
             background-color: #fce4ec;
             color: #d81b60;
             border: 2px solid #f8bbd0;
-            transition: all 0.2s ease-out; 
             position: relative; 
+            z-index: 10;
         }
 
         /* Floating background elements */
@@ -119,6 +110,23 @@
             animation: fadeIn 0.8s forwards;
         }
 
+        .planner {
+            margin-top: 20px;
+            text-align: left;
+            background: #fff5f8;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px dashed #ff4081;
+        }
+
+        select, input {
+            width: 100%;
+            padding: 8px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+
         @keyframes fadeIn {
             from { opacity: 0; transform: scale(0.9); }
             to { opacity: 1; transform: scale(1); }
@@ -129,23 +137,33 @@
 
 <div class="container" id="mainContainer">
     <div id="askStage">
-        <img src="ice_castle.jpg" alt="Valentine" class="valentine-img">
-        
+        <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHpueXNid2Z4Ym10bmZqZ3RreHlxZzR3ZzR3ZzR3ZzR3ZzR3ZzR3JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/c76IJbxBmyfLYCjKi8/giphy.gif" alt="Cute Bear" class="valentine-img">
         <h1>Babe 💗</h1>
         <p class="question">I have a very important question.<br>Will you be my Valentine? 💗</p>
         
         <div class="buttons">
             <button id="yesBtn">YES! 😍</button>
-            <div class="no-button-wrapper">
-                <button id="noBtn">NO! 🙅🏻‍♀️</button>
-            </div>
+            <button id="noBtn">NO! 🙅🏻‍♀️</button>
         </div>
     </div>
 
     <div class="success" id="successPage">
-        <img src="babe.jpg" alt="Success" class="valentine-img">
+        <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbmZ0bmZqZ3RreHlxZzR3ZzR3ZzR3ZzR3ZzR3ZzR3ZzR3JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/KztT2c4u8mYYUiMKdJ/giphy.gif" alt="Success" class="valentine-img">
         <h1 style="color: #ff4081;">YAY! See you then! ❤️</h1>
-        <p style="font-size: 1.3rem; color: #444;">I knew you couldn't resist. 😘💐</p>
+        
+        <div class="planner">
+            <p style="margin:0; font-weight:bold; color:#d81b60;">Quick Date Check: 📝</p>
+            <label>What are we eating?</label>
+            <select id="food">
+                <option>Sushi 🍣</option>
+                <option>Italian 🍝</option>
+                <option>Burgers 🍔</option>
+                <option>Surprise Me! ✨</option>
+            </select>
+            <label>What time?</label>
+            <input type="time" id="time" value="19:00">
+            <button onclick="sendPlan()" style="background:#ff4081; color:white; width:100%; margin-top:10px; font-size:0.9rem;">Lock it in! 🔒</button>
+        </div>
     </div>
 </div>
 
@@ -155,72 +173,84 @@
     const askStage = document.getElementById('askStage');
     const successPage = document.getElementById('successPage');
     
-    // Vibrant flowers and hearts (No dead roses!)
-    const elements = ['❤️', '💖', '🌹', '🌷', '💕', '🌺', '💗', '🌸', '✨', '💝'];
+    let yesScale = 1;
+    let noClickCount = 0;
 
+    const phrases = [
+        "Are you sure?", 
+        "Really??", 
+        "Think again! 🥺", 
+        "Pwease?", 
+        "Don't do this! 💔", 
+        "I'm gonna cry...", 
+        "You're breaking my heart",
+        "Last chance! 😤"
+    ];
+
+    // --- FLOATING BACKGROUND ELEMENTS ---
+    const elements = ['❤️', '💖', '🌹', '🌷', '💕', '🌺', '💗', '🌸', '✨', '💝'];
     function spawnElements(count) {
         for (let i = 0; i < count; i++) {
             const el = document.createElement('div');
             el.className = 'floating-element';
             el.innerText = elements[Math.floor(Math.random() * elements.length)];
-            
             el.style.left = Math.random() * 100 + 'vw';
             el.style.top = Math.random() * 100 + 'vh';
-            
             const size = Math.random() * (2.2 - 1) + 1; 
             el.style.fontSize = `${size}rem`;
             el.style.animationDuration = (Math.random() * 4 + 6) + 's';
-            el.style.animationDelay = (Math.random() * 5) + 's';
-            
-            // Random initial tilt
-            el.style.transform = `rotate(${Math.random() * 360}deg)`;
-            
             document.body.appendChild(el);
         }
     }
+    spawnElements(20);
 
-    // Initial scatter
-    spawnElements(25);
+    // --- NO BUTTON ESCAPE LOGIC ---
+    function moveButton() {
+        // Increase Yes button size
+        yesScale += 0.2;
+        yesBtn.style.transform = `scale(${yesScale})`;
 
-    // --- NO BUTTON LOGIC ---
-    let isFloating = false;
-    function escape() {
-        if (!isFloating) {
-            const rect = noBtn.getBoundingClientRect();
-            noBtn.style.left = rect.left + 'px';
-            noBtn.style.top = rect.top + 'px';
-            noBtn.style.margin = '0';
-            noBtn.style.position = 'fixed';
-            isFloating = true;
-            void noBtn.offsetHeight; 
-        }
-        const maxX = window.innerWidth - noBtn.offsetWidth - 50;
-        const maxY = window.innerHeight - noBtn.offsetHeight - 50;
-        noBtn.style.left = Math.max(50, Math.random() * maxX) + 'px';
-        noBtn.style.top = Math.max(50, Math.random() * maxY) + 'px';
+        // Change No button text
+        noBtn.innerText = phrases[Math.min(noClickCount, phrases.length - 1)];
+        noClickCount++;
+
+        // Move No button randomly
+        const x = Math.random() * (window.innerWidth - noBtn.offsetWidth - 100);
+        const y = Math.random() * (window.innerHeight - noBtn.offsetHeight - 100);
+        
+        noBtn.style.position = 'absolute';
+        noBtn.style.left = x + 'px';
+        noBtn.style.top = y + 'px';
     }
 
-    document.addEventListener('mousemove', (e) => {
-        const rect = noBtn.getBoundingClientRect();
-        const distance = Math.hypot(e.clientX - (rect.left + rect.width/2), e.clientY - (rect.top + rect.height/2));
-        if (distance < 150) escape();
-    });
-
+    noBtn.addEventListener('mouseover', moveButton);
     noBtn.addEventListener('touchstart', (e) => {
         e.preventDefault();
-        escape();
+        moveButton();
     });
 
-    // --- YES BUTTON LOGIC ---
+    // --- YES BUTTON CLICK ---
     yesBtn.addEventListener('click', () => {
         askStage.style.display = 'none';
-        noBtn.style.display = 'none'; 
         successPage.style.display = 'block';
         document.body.style.background = 'linear-gradient(135deg, #ff80ab, #f06292)';
         
-        // Final celebration burst
-        spawnElements(50);
+        // Confetti Burst
+        confetti({
+            particleCount: 150,
+            spread: 70,
+            origin: { y: 0.6 },
+            colors: ['#ff4081', '#ffffff', '#ff80ab']
+        });
     });
+
+    // --- DATE PLANNER ACTION ---
+    function sendPlan() {
+        const food = document.getElementById('food').value;
+        const time = document.getElementById('time').value;
+        alert(`Yay! It's a date! 🥂\nWe're having ${food} at ${time}.\nI'll see you then!`);
+        // Optional: window.location.href = `mailto:yourname@email.com?subject=Date Confirmed!&body=I want ${food} at ${time}`;
+    }
 </script>
 
 </body>
