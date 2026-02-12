@@ -14,7 +14,7 @@
             justify-content: center;
             align-items: center;
             overflow: hidden;
-            transition: background 1.5s ease;
+            transition: background 1.5s ease; /* Smoother color transition */
         }
 
         .container {
@@ -26,7 +26,7 @@
             box-shadow: 0 15px 35px rgba(0,0,0,0.15);
             width: 90%;
             max-width: 700px; 
-            min-height: 480px;
+            min-height: 450px;
             position: relative;
             z-index: 10;
         }
@@ -52,16 +52,11 @@
             margin-bottom: 30px;
         }
 
-        /* Fixed button layout to prevent jumping */
         .buttons {
             display: flex;
             justify-content: center;
-            align-items: center;
-            height: 100px;
-            position: relative;
-            /* This width ensures the Yes button stays to the left */
-            width: 300px;
-            margin: 0 auto;
+            gap: 20px;
+            height: 80px;
         }
 
         button {
@@ -71,7 +66,7 @@
             border-radius: 50px;
             cursor: pointer;
             font-weight: bold;
-            transition: transform 0.2s, background-color 0.2s;
+            transition: transform 0.2s;
         }
 
         #yesBtn {
@@ -79,9 +74,6 @@
             color: white;
             z-index: 11;
             box-shadow: 0 4px 15px rgba(255, 64, 129, 0.3);
-            /* This keeps the Yes button on the left side of the button area */
-            position: absolute;
-            left: 0;
         }
 
         #yesBtn:hover {
@@ -94,8 +86,7 @@
             color: #666;
             border: 1px solid #ddd;
             transition: all 0.2s ease-out; 
-            position: absolute;
-            right: 0; /* Starts on the right side */
+            position: absolute; 
         }
 
         .heart {
@@ -133,7 +124,7 @@
         
         <div class="buttons">
             <button id="yesBtn">YES! 😍</button>
-            <button id="noBtn">No! 🙅🏻‍♀️</button>
+            <button id="noBtn" style="position: relative;">No</button>
         </div>
     </div>
 
@@ -159,25 +150,17 @@
 
     function escape() {
         if (!isFloating) {
-            // Get current coordinate relative to the screen
             const rect = noBtn.getBoundingClientRect();
-            
-            // Lock current position before switching to fixed
             noBtn.style.left = rect.left + 'px';
             noBtn.style.top = rect.top + 'px';
             noBtn.style.margin = '0';
             noBtn.style.position = 'fixed';
-            
             isFloating = true;
-
-            // Force reflow
             void noBtn.offsetHeight; 
         }
 
         const btnWidth = noBtn.offsetWidth;
         const btnHeight = noBtn.offsetHeight;
-        
-        // Random spot logic
         const maxX = window.innerWidth - btnWidth - 50;
         const maxY = window.innerHeight - btnHeight - 50;
 
@@ -188,12 +171,10 @@
         noBtn.style.top = randomY + 'px';
     }
 
-    // Proximity detection
     document.addEventListener('mousemove', (e) => {
         const rect = noBtn.getBoundingClientRect();
         const btnCenterX = rect.left + rect.width / 2;
         const btnCenterY = rect.top + rect.height / 2;
-        
         const distance = Math.hypot(e.clientX - btnCenterX, e.clientY - btnCenterY);
 
         if (distance < 180) {
@@ -212,7 +193,7 @@
         noBtn.style.display = 'none'; 
         successPage.style.display = 'block';
         
-        // Passionate Pink Gradient
+        // THE "PASSIONATE PINK" BACKGROUND
         document.body.style.background = 'linear-gradient(135deg, #ff80ab, #f06292)';
     });
 </script>
