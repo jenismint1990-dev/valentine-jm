@@ -3,114 +3,119 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>URGENT: Claim Your Prize!</title>
+    <title>Will You Be My Valentine? ❤️</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background: linear-gradient(to bottom, #f4f4f4, #ffebee);
+            background: linear-gradient(to bottom, #fff0f5, #ffebee);
             margin: 0;
             height: 100vh;
             overflow: hidden;
-            transition: background 1s;
             position: relative;
+            cursor: default;
         }
         .container {
             background: white;
-            border: 3px solid #ff1744;
-            border-radius: 12px;
-            padding: 40px;
+            border: 4px solid #ff1744;
+            border-radius: 20px;
+            padding: 50px 30px;
             text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            max-width: 450px;
-            margin: 40px auto;
+            box-shadow: 0 15px 40px rgba(255, 23, 68, 0.3);
+            max-width: 500px;
+            margin: 60px auto;
             position: relative;
             z-index: 10;
         }
         h1 {
             color: #d50000;
-            margin-bottom: 15px;
-            font-size: 2.2rem;
+            font-size: 2.8rem;
+            margin-bottom: 20px;
         }
         .question {
-            font-size: 1.4rem;
+            font-size: 1.6rem;
             color: #333;
-            margin: 25px 0;
+            margin: 30px 0;
+            line-height: 1.4;
         }
         .buttons {
             position: relative;
-            height: 140px; /* more space for movement */
-            margin: 40px 0;
+            min-height: 180px;
+            margin: 50px 0;
         }
         button {
-            padding: 16px 40px;
-            font-size: 1.3rem;
+            padding: 18px 50px;
+            font-size: 1.5rem;
             border: none;
-            border-radius: 10px;
+            border-radius: 12px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.25s ease;
             position: absolute;
             user-select: none;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.15);
         }
         #yesBtn {
             background: #4caf50;
             color: white;
             left: 50%;
             transform: translateX(-50%);
-            top: 0;
+            top: 20px;
         }
         #yesBtn:hover {
-            background: #43a047;
-            transform: translateX(-50%) scale(1.08);
+            background: #388e3c;
+            transform: translateX(-50%) scale(1.12);
         }
         #noBtn {
             background: #f44336;
             color: white;
             left: 50%;
-            top: 70px;
+            top: 100px;
             transform: translateX(-50%);
         }
         .heart {
             position: absolute;
-            font-size: 3rem;
+            font-size: 3.5rem;
             color: #ff4081;
             pointer-events: none;
-            animation: float 6s infinite ease-in-out;
+            animation: float 7s infinite ease-in-out;
         }
         @keyframes float {
             0%, 100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-25px) rotate(12deg); }
+            50% { transform: translateY(-35px) rotate(15deg); }
         }
         .success {
             display: none;
-            animation: fadeIn 0.7s forwards;
+            animation: popIn 0.8s forwards;
         }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.85); }
-            to { opacity: 1; transform: scale(1); }
+        @keyframes popIn {
+            0% { opacity: 0; transform: scale(0.6); }
+            100% { opacity: 1; transform: scale(1); }
         }
     </style>
 </head>
 <body>
+
 <div class="container">
-    <h1>SCAM ALERT!</h1>
-    <p class="question">You've won a very exclusive offer...<br>Will you be my Valentine? ❤️</p>
+    <h1>Heyyy! 💕</h1>
+    <p class="question">Will you be my Valentine? 🥺❤️</p>
     <div class="buttons">
-        <button id="yesBtn">Yes!! 💕</button>
+        <button id="yesBtn">YES!! 😍</button>
         <button id="noBtn">No</button>
     </div>
     <div class="success" id="successPage">
-        <h1 style="color: #4caf50; font-size: 3rem;">I knew it! 😍</h1>
-        <p style="font-size: 1.6rem; color: #e91e63; margin: 30px 0;">
-            Happy Valentine's Day, my love!<br>You were always going to say yes ❤️🎉
+        <h1 style="color: #4caf50; font-size: 3.5rem;">Yayyyy! 🎉💖</h1>
+        <p style="font-size: 1.9rem; color: #e91e63; margin: 40px 0;">
+            I knew you'd say yes!<br>
+            Best Valentine ever ❤️🥰
         </p>
     </div>
 </div>
 
 <!-- Floating hearts -->
-<div class="heart" style="left: 8%; top: 10%; animation-delay: 0s;">❤️</div>
-<div class="heart" style="left: 85%; top: 18%; animation-delay: 1.5s;">💖</div>
-<div class="heart" style="left: 15%; top: 75%; animation-delay: 3s;">💕</div>
-<div class="heart" style="left: 80%; top: 65%; animation-delay: 4.5s;">🌹</div>
+<div class="heart" style="left: 10%; top: 15%; animation-delay: 0s;">❤️</div>
+<div class="heart" style="left: 88%; top: 22%; animation-delay: 1.2s;">💖</div>
+<div class="heart" style="left: 18%; top: 78%; animation-delay: 2.8s;">💕</div>
+<div class="heart" style="left: 82%; top: 60%; animation-delay: 4.2s;">🌸</div>
+<div class="heart" style="left: 45%; top: 40%; animation-delay: 5.5s;">💞</div>
 
 <script>
     const noBtn = document.getElementById('noBtn');
@@ -118,95 +123,81 @@
     const successPage = document.getElementById('successPage');
     const container = document.querySelector('.container');
 
-    // ─── Adjustable settings ───────────────────────────────────────
-    const TRIGGER_DISTANCE   = 110;     // px — when mouse closer than this → move
-    const MAX_MOVE_PER_EVENT = 32;      // max pixels it moves per mousemove
-    const RANDOM_ANGLE_JITTER = 35;     // degrees — how much randomness in escape direction
-    const KEEP_IN_MARGIN     = 60;      // minimum distance from screen edge
+    // Tune these to match the "Instagram Reel vibe" (strong dodging)
+    const TRIGGER_DISTANCE   = 140;     // bigger zone → reacts from farther
+    const MAX_JUMP           = 80;      // bigger jumps = more chaotic/funny
+    const HOVER_KICK         = 140;     // extra big push when cursor actually touches
+    const RANDOM_JITTER_DEG  = 60;      // more randomness = harder to catch
+    const EDGE_MARGIN        = 80;      // stays well inside screen
 
-    let lastMouseX = window.innerWidth / 2;
-    let lastMouseY = window.innerHeight / 2;
-
-    function getEscapeAngle(mouseX, mouseY) {
+    function getDirectionAngle(mouseX, mouseY, isHoverKick = false) {
         const rect = noBtn.getBoundingClientRect();
-        const centerX = rect.left + rect.width / 2;
-        const centerY = rect.top + rect.height / 2;
+        const cx = rect.left + rect.width / 2;
+        const cy = rect.top + rect.height / 2;
 
-        let angle = Math.atan2(centerY - mouseY, centerX - mouseX);
+        let angle = Math.atan2(cy - mouseY, cx - mouseX);
 
-        // Add small random jitter
-        const jitter = (Math.random() - 0.5) * (RANDOM_ANGLE_JITTER * Math.PI / 180);
-        angle += jitter;
+        // Add randomness so it's not predictable
+        const jitterRad = (Math.random() - 0.5) * (RANDOM_JITTER_DEG * Math.PI / 180);
+        angle += jitterRad;
 
         return angle;
     }
 
-    function moveButtonAway(mouseX, mouseY) {
+    function dodge(mouseX, mouseY, isStrong = false) {
         const rect = noBtn.getBoundingClientRect();
-        const centerX = rect.left + rect.width / 2;
-        const centerY = rect.top + rect.height / 2;
+        const cx = rect.left + rect.width / 2;
+        const cy = rect.top + rect.height / 2;
 
-        const dx = centerX - mouseX;
-        const dy = centerY - mouseY;
-        const distance = Math.hypot(dx, dy);
+        const dx = cx - mouseX;
+        const dy = cy - mouseY;
+        const dist = Math.hypot(dx, dy);
 
-        if (distance >= TRIGGER_DISTANCE || distance === 0) {
-            return;
-        }
+        if (dist > TRIGGER_DISTANCE && !isStrong) return;
 
-        // Direction away from mouse + jitter
-        const angle = getEscapeAngle(mouseX, mouseY);
+        const angle = getDirectionAngle(mouseX, mouseY, isStrong);
 
-        // Closer mouse = stronger push (but capped)
-        let pushStrength = 1 - (distance / TRIGGER_DISTANCE);
-        pushStrength = Math.max(0.25, pushStrength); // minimum kick
+        // Stronger kick on direct hover
+        const jumpSize = isStrong ? HOVER_KICK : MAX_JUMP * (1 - dist / TRIGGER_DISTANCE);
+        const moveDist = Math.max(30, jumpSize); // minimum movement
 
-        const moveDist = MAX_MOVE_PER_EVENT * pushStrength;
+        let newLeft = rect.left + Math.cos(angle) * moveDist;
+        let newTop  = rect.top  + Math.sin(angle) * moveDist;
 
-        let moveX = Math.cos(angle) * moveDist;
-        let moveY = Math.sin(angle) * moveDist;
-
-        // Calculate new position
-        let newLeft = rect.left + moveX;
-        let newTop  = rect.top  + moveY;
-
-        // Keep inside screen with margin
-        newLeft = Math.max(KEEP_IN_MARGIN, Math.min(window.innerWidth - rect.width - KEEP_IN_MARGIN, newLeft));
-        newTop  = Math.max(KEEP_IN_MARGIN, Math.min(window.innerHeight - rect.height - KEEP_IN_MARGIN, newTop));
+        // Clamp to screen
+        newLeft = Math.max(EDGE_MARGIN, Math.min(window.innerWidth - rect.width - EDGE_MARGIN, newLeft));
+        newTop  = Math.max(EDGE_MARGIN, Math.min(window.innerHeight - rect.height - EDGE_MARGIN, newTop));
 
         noBtn.style.left = newLeft + 'px';
         noBtn.style.top  = newTop + 'px';
-        noBtn.style.transform = 'none'; // override initial centering
+        noBtn.style.transform = 'none';
     }
 
     // ─── Events ────────────────────────────────────────────────────
     document.addEventListener('mousemove', (e) => {
-        lastMouseX = e.clientX;
-        lastMouseY = e.clientY;
-        moveButtonAway(e.clientX, e.clientY);
+        dodge(e.clientX, e.clientY);
     });
 
-    // Extra kick when mouse actually enters the button
+    // Big kick when cursor actually enters the button (classic prank feel)
     noBtn.addEventListener('mouseenter', () => {
-        moveButtonAway(lastMouseX, lastMouseY);
+        const rect = noBtn.getBoundingClientRect();
+        const mx = rect.left + rect.width / 2;
+        const my = rect.top + rect.height / 2;
+        dodge(mx, my, true); // strong = true
     });
 
-    // Yes button → success
+    // Prevent clicking No by also dodging on mousedown near it
+    noBtn.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        const rect = noBtn.getBoundingClientRect();
+        dodge(e.clientX, e.clientY, true);
+    });
+
     yesBtn.addEventListener('click', () => {
         container.querySelector('.question, .buttons').style.display = 'none';
         successPage.style.display = 'block';
-        document.body.style.background = 'linear-gradient(to bottom, #fff3f5, #ffebee)';
+        document.body.style.background = 'linear-gradient(to bottom, #fce4ec, #f8bbd0)';
     });
-
-    // Optional: tiny idle movement every few seconds (uncomment if you want it to wiggle a bit when ignored)
-    /*
-    setInterval(() => {
-        const rect = noBtn.getBoundingClientRect();
-        if (Math.hypot(rect.left + rect.width/2 - lastMouseX, rect.top + rect.height/2 - lastMouseY) > TRIGGER_DISTANCE + 80) {
-            moveButtonAway(lastMouseX, lastMouseY);
-        }
-    }, 2200);
-    */
 </script>
 </body>
 </html>
