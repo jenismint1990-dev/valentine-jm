@@ -92,24 +92,26 @@
         }
 
         #noBtn {
-            background-color: #fce4ec; /* Light Pink */
-            color: #d81b60;           /* Darker Pink text */
-            border: 2px solid #f8bbd0; /* Soft Pink border */
+            background-color: #fce4ec;
+            color: #d81b60;
+            border: 2px solid #f8bbd0;
             transition: all 0.2s ease-out; 
             position: relative; 
         }
 
-        .heart {
+        /* Floating background elements */
+        .floating-element {
             position: absolute;
-            font-size: 2rem;
             opacity: 0.6;
             pointer-events: none;
-            animation: float 5s infinite ease-in-out;
+            z-index: 1;
+            animation: floatSway 8s infinite ease-in-out;
         }
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
+        @keyframes floatSway {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(20px, -50px) rotate(15deg); }
+            66% { transform: translate(-20px, -20px) rotate(-15deg); }
         }
 
         .success {
@@ -147,19 +149,41 @@
     </div>
 </div>
 
-<div class="heart" style="left: 10%; top: 20%;">❤️</div>
-<div class="heart" style="right: 15%; top: 30%;">💖</div>
-<div class="heart" style="left: 20%; bottom: 20%;">💕</div>
-<div class="heart" style="right: 10%; bottom: 10%;">🌹</div>
-
 <script>
     const noBtn = document.getElementById('noBtn');
     const yesBtn = document.getElementById('yesBtn');
     const askStage = document.getElementById('askStage');
     const successPage = document.getElementById('successPage');
     
-    let isFloating = false;
+    // Vibrant flowers and hearts (No dead roses!)
+    const elements = ['❤️', '💖', '🌹', '🌷', '💕', '🌺', '💗', '🌸', '✨', '💝'];
 
+    function spawnElements(count) {
+        for (let i = 0; i < count; i++) {
+            const el = document.createElement('div');
+            el.className = 'floating-element';
+            el.innerText = elements[Math.floor(Math.random() * elements.length)];
+            
+            el.style.left = Math.random() * 100 + 'vw';
+            el.style.top = Math.random() * 100 + 'vh';
+            
+            const size = Math.random() * (2.2 - 1) + 1; 
+            el.style.fontSize = `${size}rem`;
+            el.style.animationDuration = (Math.random() * 4 + 6) + 's';
+            el.style.animationDelay = (Math.random() * 5) + 's';
+            
+            // Random initial tilt
+            el.style.transform = `rotate(${Math.random() * 360}deg)`;
+            
+            document.body.appendChild(el);
+        }
+    }
+
+    // Initial scatter
+    spawnElements(25);
+
+    // --- NO BUTTON LOGIC ---
+    let isFloating = false;
     function escape() {
         if (!isFloating) {
             const rect = noBtn.getBoundingClientRect();
@@ -170,29 +194,16 @@
             isFloating = true;
             void noBtn.offsetHeight; 
         }
-
-        const btnWidth = noBtn.offsetWidth;
-        const btnHeight = noBtn.offsetHeight;
-        
-        const maxX = window.innerWidth - btnWidth - 50;
-        const maxY = window.innerHeight - btnHeight - 50;
-
-        const randomX = Math.max(50, Math.random() * maxX);
-        const randomY = Math.max(50, Math.random() * maxY);
-
-        noBtn.style.left = randomX + 'px';
-        noBtn.style.top = randomY + 'px';
+        const maxX = window.innerWidth - noBtn.offsetWidth - 50;
+        const maxY = window.innerHeight - noBtn.offsetHeight - 50;
+        noBtn.style.left = Math.max(50, Math.random() * maxX) + 'px';
+        noBtn.style.top = Math.max(50, Math.random() * maxY) + 'px';
     }
 
     document.addEventListener('mousemove', (e) => {
         const rect = noBtn.getBoundingClientRect();
-        const btnCenterX = rect.left + rect.width / 2;
-        const btnCenterY = rect.top + rect.height / 2;
-        const distance = Math.hypot(e.clientX - btnCenterX, e.clientY - btnCenterY);
-
-        if (distance < 150) {
-            escape();
-        }
+        const distance = Math.hypot(e.clientX - (rect.left + rect.width/2), e.clientY - (rect.top + rect.height/2));
+        if (distance < 150) escape();
     });
 
     noBtn.addEventListener('touchstart', (e) => {
@@ -200,12 +211,15 @@
         escape();
     });
 
+    // --- YES BUTTON LOGIC ---
     yesBtn.addEventListener('click', () => {
         askStage.style.display = 'none';
         noBtn.style.display = 'none'; 
         successPage.style.display = 'block';
-        
         document.body.style.background = 'linear-gradient(135deg, #ff80ab, #f06292)';
+        
+        // Final celebration burst
+        spawnElements(50);
     });
 </script>
 
