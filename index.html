@@ -1,214 +1,134 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Will You Be My Valentine? ❤️</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: linear-gradient(to bottom, #fff0f5, #ffebee);
-            margin: 0;
-            height: 100vh;
-            overflow: hidden;
-            position: relative;
-            cursor: default;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .container {
-            background: white;
-            border: 4px solid #ff1744;
-            border-radius: 20px;
-            padding: 50px 40px;
-            text-align: center;
-            box-shadow: 0 15px 40px rgba(255, 23, 68, 0.3);
-            max-width: 520px;
-            width: 90%;
-            position: relative;
-            z-index: 10;
-        }
-        h1 {
-            color: #d50000;
-            font-size: 2.8rem;
-            margin-bottom: 20px;
-        }
-        .question {
-            font-size: 1.6rem;
-            color: #333;
-            margin: 30px 0;
-            line-height: 1.4;
-        }
-        .buttons {
-            position: relative;
-            min-height: 280px;
-            margin: 50px 0;
-        }
-        button {
-            padding: 18px 60px;
-            font-size: 1.5rem;
-            border: none;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.18s ease;
-            position: absolute;
-            user-select: none;
-            box-shadow: 0 6px 15px rgba(0,0,0,0.15);
-        }
-        #yesBtn {
-            background: #4caf50;
-            color: white;
-            left: 50%;
-            transform: translateX(-50%);
-            top: 20%;
-        }
-        #yesBtn:hover {
-            background: #388e3c;
-            transform: translateX(-50%) scale(1.12);
-        }
-        #noBtn {
-            background: #f44336;
-            color: white;
-            left: 50%;
-            top: 55%;
-            transform: translate(-50%, -50%);
-        }
-        .heart {
-            position: absolute;
-            font-size: 3.5rem;
-            color: #ff4081;
-            pointer-events: none;
-            animation: float 7s infinite ease-in-out;
-        }
-        @keyframes float {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-35px) rotate(15deg); }
-        }
-        .success {
-            display: none;
-            animation: popIn 0.8s forwards;
-        }
-        @keyframes popIn {
-            0% { opacity: 0; transform: scale(0.6); }
-            100% { opacity: 1; transform: scale(1); }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Will You Be My Valentine? ❤️</title>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to bottom, #fff0f5, #ffebee);
+    margin: 0;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    background: white;
+    border: 4px solid #ff1744;
+    border-radius: 20px;
+    padding: 50px 40px;
+    text-align: center;
+    box-shadow: 0 15px 40px rgba(255, 23, 68, 0.3);
+    max-width: 520px;
+    width: 90%;
+    position: relative;
+}
+
+h1 {
+    color: #d50000;
+    font-size: 2.8rem;
+}
+
+.question {
+    font-size: 1.6rem;
+    margin: 30px 0;
+}
+
+.buttons {
+    position: relative;
+    height: 160px;
+    margin: 40px 0;
+}
+
+button {
+    padding: 18px 60px;
+    font-size: 1.5rem;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    position: absolute;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+}
+
+#yesBtn {
+    background: #4caf50;
+    color: white;
+    left: 50%;
+    top: 40%;
+    transform: translate(-110px, -50%);
+}
+
+#noBtn {
+    background: #f44336;
+    color: white;
+    left: 50%;
+    top: 40%;
+    transform: translate(20px, -50%);
+}
+
+.success {
+    display: none;
+}
+
+.heart {
+    position: absolute;
+    font-size: 3rem;
+    animation: float 6s infinite ease-in-out;
+}
+
+@keyframes float {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-30px); }
+}
+</style>
 </head>
+
 <body>
 
 <div class="container">
     <h1>Heyyy! 💕</h1>
     <p class="question">Will you be my Valentine? 🥺❤️</p>
+
     <div class="buttons">
         <button id="yesBtn">YES!! 😍</button>
         <button id="noBtn">No 😔</button>
     </div>
+
     <div class="success" id="successPage">
-        <h1 style="color: #4caf50; font-size: 3.5rem;">Yayyyy! 🎉💖</h1>
-        <p style="font-size: 1.9rem; color: #e91e63; margin: 40px 0;">
-            I knew you'd say yes!<br>
-            Best Valentine ever ❤️🥰
-        </p>
+        <h1 style="color:#4caf50;">Yayyyy! 🎉💖</h1>
+        <p style="font-size:1.8rem;color:#e91e63;">Best Valentine ever ❤️🥰</p>
     </div>
 </div>
 
-<!-- Floating hearts -->
-<div class="heart" style="left: 10%; top: 15%; animation-delay: 0s;">❤️</div>
-<div class="heart" style="left: 88%; top: 22%; animation-delay: 1.2s;">💖</div>
-<div class="heart" style="left: 18%; top: 78%; animation-delay: 2.8s;">💕</div>
-<div class="heart" style="left: 82%; top: 60%; animation-delay: 4.2s;">🌸</div>
+<!-- floating hearts -->
+<div class="heart" style="left:10%;top:10%;">❤️</div>
+<div class="heart" style="left:85%;top:20%;">💖</div>
+<div class="heart" style="left:15%;top:80%;">💕</div>
 
 <script>
-    const noBtn = document.getElementById('noBtn');
-    const yesBtn = document.getElementById('yesBtn');
-    const successPage = document.getElementById('successPage');
+const noBtn = document.getElementById("noBtn");
+const yesBtn = document.getElementById("yesBtn");
+const box = document.querySelector(".buttons");
+const successPage = document.getElementById("successPage");
 
-    // ─── Settings ──────────────────────────────────────────────────
-    const SAFE_MARGIN    = 120;       // generous margin from edges
-    const DODGE_DISTANCE = 140;       // react only when quite close
-    const MAX_STEP       = 28;        // smaller steps = no overshooting
-    const ANGLE_JITTER   = 70;        // randomness in direction
-    const CENTER_PULL    = 0.18;      // stronger return to center
+const DODGE_DISTANCE = 80;
+const STEP = 20;
 
-    function clamp(val, min, max) {
-        return Math.max(min, Math.min(max, val));
-    }
+function clamp(v, min, max) {
+    return Math.max(min, Math.min(max, v));
+}
 
-    function dodge(mouseX, mouseY) {
-        const rect = noBtn.getBoundingClientRect();
-        const btnCX = rect.left + rect.width / 2;
-        const btnCY = rect.top + rect.height / 2;
+function dodge(x, y) {
+    const b = noBtn.getBoundingClientRect();
+    const boxRect = box.getBoundingClientRect();
 
-        const dx = btnCX - mouseX;
-        const dy = btnCY - mouseY;
-        const dist = Math.hypot(dx, dy);
+    const cx = b.left + b.width / 2;
+    const cy = b.top + b.height / 2;
 
-        if (dist > DODGE_DISTANCE) return;
-
-        // Direction away from mouse + jitter
-        let angle = Math.atan2(dy, dx);
-        angle += (Math.random() - 0.5) * (ANGLE_JITTER * Math.PI / 180);
-
-        let moveX = Math.cos(angle) * MAX_STEP;
-        let moveY = Math.sin(angle) * MAX_STEP;
-
-        // Pull toward screen center
-        const centerX = window.innerWidth / 2;
-        const centerY = window.innerHeight / 2;
-        moveX += (centerX - btnCX) * CENTER_PULL;
-        moveY += (centerY - btnCY) * CENTER_PULL;
-
-        // Apply movement (capped step size already)
-        let newLeft = rect.left + moveX;
-        let newTop  = rect.top  + moveY;
-
-        // Clamp immediately
-        const maxLeft = window.innerWidth  - rect.width  - SAFE_MARGIN;
-        const maxTop  = window.innerHeight - rect.height - SAFE_MARGIN;
-
-        newLeft = clamp(newLeft, SAFE_MARGIN, maxLeft);
-        newTop  = clamp(newTop,  SAFE_MARGIN, maxTop);
-
-        noBtn.style.left = `${newLeft}px`;
-        noBtn.style.top  = `${newTop}px`;
-        noBtn.style.transform = 'none';
-    }
-
-    // ─── Mouse tracking ────────────────────────────────────────────
-    let mouse = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
-
-    document.addEventListener('mousemove', e => {
-        mouse.x = e.clientX;
-        mouse.y = e.clientY;
-        dodge(mouse.x, mouse.y);
-    });
-
-    // Gentle continuous check (not too aggressive)
-    function loop() {
-        const rect = noBtn.getBoundingClientRect();
-        const cx = rect.left + rect.width / 2;
-        const cy = rect.top + rect.height / 2;
-        const dist = Math.hypot(cx - mouse.x, cy - mouse.y);
-
-        if (dist < DODGE_DISTANCE + 30) {
-            dodge(mouse.x, mouse.y);
-        }
-        requestAnimationFrame(loop);
-    }
-    loop();
-
-    // Extra safety
-    noBtn.addEventListener('mouseenter', () => dodge(mouse.x, mouse.y));
-    noBtn.addEventListener('mouseover',   e => { e.preventDefault(); dodge(mouse.x, mouse.y); });
-    noBtn.addEventListener('click',       e => { e.preventDefault(); dodge(mouse.x, mouse.y); });
-
-    // Yes button
-    yesBtn.addEventListener('click', () => {
-        document.querySelector('.question, .buttons').style.display = 'none';
-        successPage.style.display = 'block';
-        document.body.style.background = 'linear-gradient(to bottom, #fce4ec, #f8bbd0)';
-    });
-</script>
-</body>
-</html>
+    const dx = cx - x;
+    const dy = cy - y
