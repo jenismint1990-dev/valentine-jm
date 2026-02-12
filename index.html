@@ -3,179 +3,195 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>URGENT: Claim Your Prize!</title>
+    <title>A Special Question ❤️</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background: linear-gradient(to bottom, #f4f4f4, #ffebee);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #fce4ec, #f8bbd0);
             margin: 0;
             height: 100vh;
+            display: flex; 
+            justify-content: center;
+            align-items: center;
             overflow: hidden;
             transition: background 1s;
-            position: relative;
         }
+
         .container {
             background: white;
-            border: 3px solid #ff1744;
-            border-radius: 12px;
-            padding: 40px;
+            border: 3px solid #ff4081;
+            border-radius: 20px;
+            padding: 30px;
             text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            max-width: 450px;
-            margin: 40px auto;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+            width: 90%;
+            max-width: 700px; 
+            min-height: 450px;
             position: relative;
             z-index: 10;
         }
+
+        .valentine-img {
+            width: 100%;
+            max-width: 400px;
+            height: auto;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
         h1 {
-            color: #d50000;
-            margin-bottom: 15px;
-            font-size: 2.2rem;
+            color: #d81b60;
+            margin-bottom: 10px;
+            font-size: 2.5rem;
         }
+
         .question {
-            font-size: 1.4rem;
-            color: #333;
-            margin: 25px 0;
+            font-size: 1.5rem;
+            color: #444;
+            margin-bottom: 30px;
         }
+
         .buttons {
-            position: relative;
-            height: 140px; 
-            margin: 40px 0;
             display: flex;
             justify-content: center;
-            align-items: flex-start;
+            gap: 20px;
+            height: 80px;
         }
+
         button {
-            padding: 16px 40px;
-            font-size: 1.3rem;
+            padding: 15px 45px;
+            font-size: 1.2rem;
             border: none;
-            border-radius: 10px;
+            border-radius: 50px;
             cursor: pointer;
-            user-select: none;
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+
+        /* UPDATED COLORS */
+        #yesBtn {
+            background-color: #ff4081; /* Hot Pink */
+            color: white;
+            z-index: 11;
+            box-shadow: 0 4px 15px rgba(255, 64, 129, 0.3);
+        }
+
+        #yesBtn:hover {
+            transform: scale(1.1);
+            background-color: #f50057; /* Deeper Pink */
+        }
+
+        #noBtn {
+            background-color: #f8f9fa; /* Light White/Grey */
+            color: #666;
+            border: 1px solid #ddd;
+            transition: all 0.2s ease-out;
             position: absolute; 
         }
-        #yesBtn {
-            background: #4caf50;
-            color: white;
-            z-index: 20;
-            transition: transform 0.3s ease, background 0.3s;
-        }
-        #yesBtn:hover {
-            background: #43a047;
-            transform: scale(1.08);
-        }
-        #noBtn {
-            background: #f44336;
-            color: white;
-            top: 70px; /* Initial position */
-            
-            /* THIS makes it smooth but fast */
-            transition: top 0.2s ease, left 0.2s ease; 
-        }
+
         .heart {
             position: absolute;
-            font-size: 3rem;
-            color: #ff4081;
+            font-size: 2rem;
+            opacity: 0.6;
             pointer-events: none;
-            animation: float 6s infinite ease-in-out;
+            animation: float 5s infinite ease-in-out;
         }
+
         @keyframes float {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-25px) rotate(12deg); }
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
         }
+
         .success {
             display: none;
-            animation: fadeIn 0.7s forwards;
+            animation: fadeIn 0.8s forwards;
         }
+
         @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.85); }
+            from { opacity: 0; transform: scale(0.9); }
             to { opacity: 1; transform: scale(1); }
         }
     </style>
 </head>
 <body>
-<div class="container">
-    <h1>SCAM ALERT!</h1>
-    <p class="question">You've won a very exclusive offer...<br>Will you be my Valentine? ❤️</p>
-    <div class="buttons">
-        <button id="yesBtn">Yes!! 💕</button>
-        <button id="noBtn">No</button>
+
+<div class="container" id="mainContainer">
+    <div id="askStage">
+        <img src="https://via.placeholder.com/400x250?text=Your+Cute+Photo+Here" alt="Valentine" class="valentine-img">
+        
+        <h1>Wait a second...</h1>
+        <p class="question">I have a very important question.<br>Will you be my Valentine? ❤️</p>
+        
+        <div class="buttons">
+            <button id="yesBtn">YES! 😍</button>
+            <button id="noBtn" style="position: relative;">No</button>
+        </div>
     </div>
+
     <div class="success" id="successPage">
-        <h1 style="color: #4caf50; font-size: 3rem;">I knew it! 😍</h1>
-        <p style="font-size: 1.6rem; color: #e91e63; margin: 30px 0;">
-            Happy Valentine's Day, my love!<br>You were always going to say yes ❤️🎉
-        </p>
+        <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHpueG56Znd4Zzh4eG54eG54eG54eG54eG54eG54eG54eG54JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/l41lTfuxZkM9H9i6Y/giphy.gif" alt="Success" class="valentine-img">
+        <h1 style="color: #ff4081;">YAY! See you then! ❤️</h1>
+        <p style="font-size: 1.3rem; color: #444;">I knew you couldn't resist. 😉</p>
     </div>
 </div>
 
-<div class="heart" style="left: 8%; top: 10%; animation-delay: 0s;">❤️</div>
-<div class="heart" style="left: 85%; top: 18%; animation-delay: 1.5s;">💖</div>
-<div class="heart" style="left: 15%; top: 75%; animation-delay: 3s;">💕</div>
-<div class="heart" style="left: 80%; top: 65%; animation-delay: 4.5s;">🌹</div>
+<div class="heart" style="left: 10%; top: 20%;">❤️</div>
+<div class="heart" style="right: 15%; top: 30%;">💖</div>
+<div class="heart" style="left: 20%; bottom: 20%;">💕</div>
+<div class="heart" style="right: 10%; bottom: 10%;">🌹</div>
 
 <script>
     const noBtn = document.getElementById('noBtn');
     const yesBtn = document.getElementById('yesBtn');
+    const askStage = document.getElementById('askStage');
     const successPage = document.getElementById('successPage');
-    const container = document.querySelector('.container');
-
+    
     let isFloating = false;
 
-    function moveButton() {
+    function escape() {
         if (!isFloating) {
-            noBtn.style.position = 'fixed'; 
+            noBtn.style.position = 'fixed';
             isFloating = true;
         }
 
         const btnWidth = noBtn.offsetWidth;
         const btnHeight = noBtn.offsetHeight;
         
-        // Use window.innerWidth to ensure it stays on screen
-        // Subtract button size so it doesn't clip off the edge
-        const maxX = window.innerWidth - btnWidth - 20; 
-        const maxY = window.innerHeight - btnHeight - 20;
+        const maxX = window.innerWidth - btnWidth - 50;
+        const maxY = window.innerHeight - btnHeight - 50;
 
-        const randomX = Math.max(20, Math.random() * maxX);
-        const randomY = Math.max(20, Math.random() * maxY);
+        const randomX = Math.max(50, Math.random() * maxX);
+        const randomY = Math.max(50, Math.random() * maxY);
 
-        noBtn.style.left = `${randomX}px`;
-        noBtn.style.top = `${randomY}px`;
+        noBtn.style.left = randomX + 'px';
+        noBtn.style.top = randomY + 'px';
     }
 
-    // Trigger movement when mouse gets near
     document.addEventListener('mousemove', (e) => {
-        const mouseX = e.clientX;
-        const mouseY = e.clientY;
-        const btnRect = noBtn.getBoundingClientRect();
-        const btnX = btnRect.left + btnRect.width / 2;
-        const btnY = btnRect.top + btnRect.height / 2;
+        const rect = noBtn.getBoundingClientRect();
+        const btnCenterX = rect.left + rect.width / 2;
+        const btnCenterY = rect.top + rect.height / 2;
+        const distance = Math.hypot(e.clientX - btnCenterX, e.clientY - btnCenterY);
 
-        const dist = Math.sqrt(Math.pow(mouseX - btnX, 2) + Math.pow(mouseY - btnY, 2));
-        
-        // If mouse is within 250px, move away
-        // We need a larger radius because the button now takes time to move
-        if (dist < 250) {
-            moveButton();
+        if (distance < 200) {
+            escape();
         }
     });
 
-    // If they somehow manage to click it (e.g. via tab key)
-    noBtn.addEventListener('click', () => {
-        moveButton();
-    });
-    
-    // Also move if they just hover over it directly
-    noBtn.addEventListener('mouseenter', () => {
-        moveButton();
+    noBtn.addEventListener('mouseenter', escape);
+    noBtn.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        escape();
     });
 
     yesBtn.addEventListener('click', () => {
-        container.querySelector('.question').style.display = 'none';
-        container.querySelector('.buttons').style.display = 'none';
-        noBtn.style.display = 'none'; // Hide the running button
+        askStage.style.display = 'none';
+        noBtn.style.display = 'none'; 
         successPage.style.display = 'block';
-        document.body.style.background = 'linear-gradient(to bottom, #fff3f5, #ffebee)';
+        document.body.style.background = '#fff3f5';
     });
 </script>
+
 </body>
 </html>
