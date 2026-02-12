@@ -14,7 +14,7 @@
             justify-content: center;
             align-items: center;
             overflow: hidden;
-            transition: background 1.5s ease; /* Smoother color transition */
+            transition: background 1.5s ease;
         }
 
         .container {
@@ -55,8 +55,18 @@
         .buttons {
             display: flex;
             justify-content: center;
+            align-items: center;
             gap: 20px;
-            height: 80px;
+            height: 100px;
+        }
+
+        /* This wrapper prevents the Yes button from moving */
+        .no-button-wrapper {
+            width: 150px; 
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         button {
@@ -86,7 +96,7 @@
             color: #666;
             border: 1px solid #ddd;
             transition: all 0.2s ease-out; 
-            position: absolute; 
+            position: relative; /* Starts relative inside the wrapper */
         }
 
         .heart {
@@ -124,7 +134,9 @@
         
         <div class="buttons">
             <button id="yesBtn">YES! 😍</button>
-            <button id="noBtn" style="position: relative;">No</button>
+            <div class="no-button-wrapper">
+                <button id="noBtn">NO! 🙅🏻‍♀️</button>
+            </div>
         </div>
     </div>
 
@@ -150,17 +162,21 @@
 
     function escape() {
         if (!isFloating) {
+            // Get initial position before switching to fixed
             const rect = noBtn.getBoundingClientRect();
             noBtn.style.left = rect.left + 'px';
             noBtn.style.top = rect.top + 'px';
             noBtn.style.margin = '0';
             noBtn.style.position = 'fixed';
             isFloating = true;
+            // Force reflow
             void noBtn.offsetHeight; 
         }
 
         const btnWidth = noBtn.offsetWidth;
         const btnHeight = noBtn.offsetHeight;
+        
+        // Keep button away from extreme edges
         const maxX = window.innerWidth - btnWidth - 50;
         const maxY = window.innerHeight - btnHeight - 50;
 
@@ -171,18 +187,20 @@
         noBtn.style.top = randomY + 'px';
     }
 
+    // Detect mouse proximity
     document.addEventListener('mousemove', (e) => {
         const rect = noBtn.getBoundingClientRect();
         const btnCenterX = rect.left + rect.width / 2;
         const btnCenterY = rect.top + rect.height / 2;
         const distance = Math.hypot(e.clientX - btnCenterX, e.clientY - btnCenterY);
 
-        if (distance < 180) {
+        // Move if mouse gets within 150px
+        if (distance < 150) {
             escape();
         }
     });
 
-    noBtn.addEventListener('mouseenter', escape);
+    // Mobile/Touch support
     noBtn.addEventListener('touchstart', (e) => {
         e.preventDefault();
         escape();
@@ -193,7 +211,6 @@
         noBtn.style.display = 'none'; 
         successPage.style.display = 'block';
         
-        // THE "PASSIONATE PINK" BACKGROUND
         document.body.style.background = 'linear-gradient(135deg, #ff80ab, #f06292)';
     });
 </script>
