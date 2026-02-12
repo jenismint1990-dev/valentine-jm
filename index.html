@@ -38,8 +38,8 @@
         }
         .buttons {
             position: relative;
-            height: 120px;           /* space for movement */
-            margin: 30px 0;
+            height: 140px; /* more space for movement */
+            margin: 40px 0;
         }
         button {
             padding: 16px 40px;
@@ -47,7 +47,7 @@
             border: none;
             border-radius: 10px;
             cursor: pointer;
-            transition: all 0.4s ease-out;  /* smooth sliding feel */
+            transition: all 0.3s ease;
             position: absolute;
             user-select: none;
         }
@@ -60,13 +60,13 @@
         }
         #yesBtn:hover {
             background: #43a047;
-            transform: translateX(-50%) scale(1.1);
+            transform: translateX(-50%) scale(1.08);
         }
         #noBtn {
             background: #f44336;
             color: white;
             left: 50%;
-            top: 60px;
+            top: 70px;
             transform: translateX(-50%);
         }
         .heart {
@@ -78,7 +78,7 @@
         }
         @keyframes float {
             0%, 100% { transform: translateY(0) rotate(0deg); }
-            50%      { transform: translateY(-25px) rotate(12deg); }
+            50% { transform: translateY(-25px) rotate(12deg); }
         }
         .success {
             display: none;
@@ -86,21 +86,18 @@
         }
         @keyframes fadeIn {
             from { opacity: 0; transform: scale(0.85); }
-            to   { opacity: 1; transform: scale(1); }
+            to { opacity: 1; transform: scale(1); }
         }
     </style>
 </head>
 <body>
-
 <div class="container">
     <h1>SCAM ALERT!</h1>
     <p class="question">You've won a very exclusive offer...<br>Will you be my Valentine? ❤️</p>
-
     <div class="buttons">
         <button id="yesBtn">Yes!! 💕</button>
         <button id="noBtn">No</button>
     </div>
-
     <div class="success" id="successPage">
         <h1 style="color: #4caf50; font-size: 3rem;">I knew it! 😍</h1>
         <p style="font-size: 1.6rem; color: #e91e63; margin: 30px 0;">
@@ -121,56 +118,95 @@
     const successPage = document.getElementById('successPage');
     const container = document.querySelector('.container');
 
-    let lastMouseX = 0;
-    let lastMouseY = 0;
+    // ─── Adjustable settings ───────────────────────────────────────
+    const TRIGGER_DISTANCE   = 110;     // px — when mouse closer than this → move
+    const MAX_MOVE_PER_EVENT = 32;      // max pixels it moves per mousemove
+    const RANDOM_ANGLE_JITTER = 35;     // degrees — how much randomness in escape direction
+    const KEEP_IN_MARGIN     = 60;      // minimum distance from screen edge
 
-    function updateNoButtonPosition(mouseX, mouseY) {
+    let lastMouseX = window.innerWidth / 2;
+    let lastMouseY = window.innerHeight / 2;
+
+    function getEscapeAngle(mouseX, mouseY) {
         const rect = noBtn.getBoundingClientRect();
-        const btnCenterX = rect.left + rect.width / 2;
-        const btnCenterY = rect.top + rect.height / 2;
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
 
-        const dx = btnCenterX - mouseX;
-        const dy = btnCenterY - mouseY;
-        const distance = Math.sqrt(dx * dx + dy * dy);
+        let angle = Math.atan2(centerY - mouseY, centerX - mouseX);
 
-        // Only push away if mouse is close (within ~150px)
-        if (distance < 150 && distance > 0) {
-            // Direction away from mouse + some randomness
-            const force = 120 / (distance + 1); // stronger when closer
-            let moveX = dx * force * 0.8 + (Math.random() - 0.5) * 40;
-            let moveY = dy * force * 0.8 + (Math.random() - 0.5) * 40;
+        // Add small random jitter
+        const jitter = (Math.random() - 0.5) * (RANDOM_ANGLE_JITTER * Math.PI / 180);
+        angle += jitter;
 
-            // Keep within viewport bounds
-            let newLeft = rect.left + moveX;
-            let newTop  = rect.top  + moveY;
-
-            newLeft = Math.max(20, Math.min(window.innerWidth - rect.width - 20, newLeft));
-            newTop  = Math.max(20, Math.min(window.innerHeight - rect.height - 20, newTop));
-
-            noBtn.style.left = newLeft + 'px';
-            noBtn.style.top  = newTop + 'px';
-            noBtn.style.transform = 'none'; // override initial centering
-        }
+        return angle;
     }
 
-    // Track mouse movement over the whole document
+    function moveButtonAway(mouseX, mouseY) {
+        const rect = noBtn.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+
+        const dx = centerX - mouseX;
+        const dy = centerY - mouseY;
+        const distance = Math.hypot(dx, dy);
+
+        if (distance >= TRIGGER_DISTANCE || distance === 0) {
+            return;
+        }
+
+        // Direction away from mouse + jitter
+        const angle = getEscapeAngle(mouseX, mouseY);
+
+        // Closer mouse = stronger push (but capped)
+        let pushStrength = 1 - (distance / TRIGGER_DISTANCE);
+        pushStrength = Math.max(0.25, pushStrength); // minimum kick
+
+        const moveDist = MAX_MOVE_PER_EVENT * pushStrength;
+
+        let moveX = Math.cos(angle) * moveDist;
+        let moveY = Math.sin(angle) * moveDist;
+
+        // Calculate new position
+        let newLeft = rect.left + moveX;
+        let newTop  = rect.top  + moveY;
+
+        // Keep inside screen with margin
+        newLeft = Math.max(KEEP_IN_MARGIN, Math.min(window.innerWidth - rect.width - KEEP_IN_MARGIN, newLeft));
+        newTop  = Math.max(KEEP_IN_MARGIN, Math.min(window.innerHeight - rect.height - KEEP_IN_MARGIN, newTop));
+
+        noBtn.style.left = newLeft + 'px';
+        noBtn.style.top  = newTop + 'px';
+        noBtn.style.transform = 'none'; // override initial centering
+    }
+
+    // ─── Events ────────────────────────────────────────────────────
     document.addEventListener('mousemove', (e) => {
         lastMouseX = e.clientX;
         lastMouseY = e.clientY;
-        updateNoButtonPosition(e.clientX, e.clientY);
+        moveButtonAway(e.clientX, e.clientY);
     });
 
-    // Also check when mouse enters the button area specifically
+    // Extra kick when mouse actually enters the button
     noBtn.addEventListener('mouseenter', () => {
-        updateNoButtonPosition(lastMouseX, lastMouseY);
+        moveButtonAway(lastMouseX, lastMouseY);
     });
 
+    // Yes button → success
     yesBtn.addEventListener('click', () => {
         container.querySelector('.question, .buttons').style.display = 'none';
         successPage.style.display = 'block';
         document.body.style.background = 'linear-gradient(to bottom, #fff3f5, #ffebee)';
     });
-</script>
 
+    // Optional: tiny idle movement every few seconds (uncomment if you want it to wiggle a bit when ignored)
+    /*
+    setInterval(() => {
+        const rect = noBtn.getBoundingClientRect();
+        if (Math.hypot(rect.left + rect.width/2 - lastMouseX, rect.top + rect.height/2 - lastMouseY) > TRIGGER_DISTANCE + 80) {
+            moveButtonAway(lastMouseX, lastMouseY);
+        }
+    }, 2200);
+    */
+</script>
 </body>
 </html>
