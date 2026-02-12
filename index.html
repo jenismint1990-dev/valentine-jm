@@ -40,7 +40,6 @@
             position: relative;
             height: 140px; 
             margin: 40px 0;
-            /* Flexbox to center the Yes button initially */
             display: flex;
             justify-content: center;
             align-items: flex-start;
@@ -52,7 +51,7 @@
             border-radius: 10px;
             cursor: pointer;
             user-select: none;
-            position: absolute; /* Default absolute */
+            position: absolute; 
         }
         #yesBtn {
             background: #4caf50;
@@ -67,9 +66,10 @@
         #noBtn {
             background: #f44336;
             color: white;
-            top: 70px; /* Initial position below Yes */
-            /* IMPORTANT: No transition on left/top to make it instant */
-            transition: background 0.3s; 
+            top: 70px; /* Initial position */
+            
+            /* THIS makes it smooth but fast */
+            transition: top 0.2s ease, left 0.2s ease; 
         }
         .heart {
             position: absolute;
@@ -119,73 +119,60 @@
     const successPage = document.getElementById('successPage');
     const container = document.querySelector('.container');
 
-    // State to track if we've already popped the button out of the card
     let isFloating = false;
 
-    function moveButtonRandomly() {
-        // 1. Switch to fixed positioning if not already
+    function moveButton() {
         if (!isFloating) {
-            noBtn.style.position = 'fixed';
+            noBtn.style.position = 'fixed'; 
             isFloating = true;
         }
 
-        // 2. Calculate available screen space (minus button size and padding)
-        const padding = 20;
         const btnWidth = noBtn.offsetWidth;
         const btnHeight = noBtn.offsetHeight;
         
-        const maxX = window.innerWidth - btnWidth - padding;
-        const maxY = window.innerHeight - btnHeight - padding;
+        // Use window.innerWidth to ensure it stays on screen
+        // Subtract button size so it doesn't clip off the edge
+        const maxX = window.innerWidth - btnWidth - 20; 
+        const maxY = window.innerHeight - btnHeight - 20;
 
-        // 3. Generate random coordinates
-        const randomX = Math.max(padding, Math.random() * maxX);
-        const randomY = Math.max(padding, Math.random() * maxY);
+        const randomX = Math.max(20, Math.random() * maxX);
+        const randomY = Math.max(20, Math.random() * maxY);
 
-        // 4. Apply new position
         noBtn.style.left = `${randomX}px`;
         noBtn.style.top = `${randomY}px`;
     }
 
-    // Event 1: Mouseover (Instant jump if they try to touch it)
-    noBtn.addEventListener('mouseover', () => {
-        moveButtonRandomly();
-    });
-
-    // Event 2: Mousemove (Proximity check for smoother evasion)
+    // Trigger movement when mouse gets near
     document.addEventListener('mousemove', (e) => {
         const mouseX = e.clientX;
         const mouseY = e.clientY;
         const btnRect = noBtn.getBoundingClientRect();
-        
-        // Calculate center of button
         const btnX = btnRect.left + btnRect.width / 2;
         const btnY = btnRect.top + btnRect.height / 2;
 
-        // Distance formula
         const dist = Math.sqrt(Math.pow(mouseX - btnX, 2) + Math.pow(mouseY - btnY, 2));
-
-        // If mouse is within 150px, move it away
-        if (dist < 150) {
-            moveButtonRandomly();
+        
+        // If mouse is within 250px, move away
+        // We need a larger radius because the button now takes time to move
+        if (dist < 250) {
+            moveButton();
         }
     });
 
-    // Event 3: Click (Just in case they manage to click it via tab or glitches)
+    // If they somehow manage to click it (e.g. via tab key)
     noBtn.addEventListener('click', () => {
-        alert("Nice try! But you have to say Yes. 😉");
-        moveButtonRandomly();
+        moveButton();
+    });
+    
+    // Also move if they just hover over it directly
+    noBtn.addEventListener('mouseenter', () => {
+        moveButton();
     });
 
-    // Yes button → success
     yesBtn.addEventListener('click', () => {
-        // Hide the inputs
         container.querySelector('.question').style.display = 'none';
         container.querySelector('.buttons').style.display = 'none';
-        
-        // Hide the floating No button if it's still visible
-        noBtn.style.display = 'none';
-
-        // Show success
+        noBtn.style.display = 'none'; // Hide the running button
         successPage.style.display = 'block';
         document.body.style.background = 'linear-gradient(to bottom, #fff3f5, #ffebee)';
     });
