@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Will You Be My Valentine?????? ❤️</title>
+    <title>Will You Be My Valentine? ❤️</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -39,7 +39,7 @@
         }
         .buttons {
             position: relative;
-            min-height: 180px;
+            min-height: 200px;
             margin: 50px 0;
         }
         button {
@@ -48,10 +48,11 @@
             border: none;
             border-radius: 12px;
             cursor: pointer;
-            transition: all 0.25s ease;
+            transition: all 0.18s ease;
             position: absolute;
             user-select: none;
             box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+            pointer-events: auto; /* but we'll block No via JS */
         }
         #yesBtn {
             background: #4caf50;
@@ -68,7 +69,7 @@
             background: #f44336;
             color: white;
             left: 50%;
-            top: 100px;
+            top: 110px;
             transform: translateX(-50%);
         }
         .heart {
@@ -96,10 +97,10 @@
 
 <div class="container">
     <h1>Heyyy! 💕</h1>
-    <p class="question">Will you be my Valentine?????? 🥺❤️</p>
+    <p class="question">Will you be my Valentine? 🥺❤️</p>
     <div class="buttons">
         <button id="yesBtn">YES!! 😍</button>
-        <button id="noBtn">No</button>
+        <button id="noBtn">No 😔</button>
     </div>
     <div class="success" id="successPage">
         <h1 style="color: #4caf50; font-size: 3.5rem;">Yayyyy! 🎉💖</h1>
@@ -115,7 +116,6 @@
 <div class="heart" style="left: 88%; top: 22%; animation-delay: 1.2s;">💖</div>
 <div class="heart" style="left: 18%; top: 78%; animation-delay: 2.8s;">💕</div>
 <div class="heart" style="left: 82%; top: 60%; animation-delay: 4.2s;">🌸</div>
-<div class="heart" style="left: 45%; top: 40%; animation-delay: 5.5s;">💞</div>
 
 <script>
     const noBtn = document.getElementById('noBtn');
@@ -123,81 +123,107 @@
     const successPage = document.getElementById('successPage');
     const container = document.querySelector('.container');
 
-    // Tune these to match the "Instagram Reel vibe" (strong dodging)
-    const TRIGGER_DISTANCE   = 140;     // bigger zone → reacts from farther
-    const MAX_JUMP           = 80;      // bigger jumps = more chaotic/funny
-    const HOVER_KICK         = 140;     // extra big push when cursor actually touches
-    const RANDOM_JITTER_DEG  = 60;      // more randomness = harder to catch
-    const EDGE_MARGIN        = 80;      // stays well inside screen
+    // ─── Settings ──────────────────────────────────────────────────
+    const SAFE_MARGIN       = 90;       // px — button always stays this far from edges
+    const DODGE_DISTANCE    = 160;      // react when mouse closer than this
+    const STEP_SIZE         = 38;       // how far to move each time (big enough to escape, not too wild)
+    const ANGLE_JITTER      = 55;       // degrees of randomness
 
-    function getDirectionAngle(mouseX, mouseY, isHoverKick = false) {
-        const rect = noBtn.getBoundingClientRect();
-        const cx = rect.left + rect.width / 2;
-        const cy = rect.top + rect.height / 2;
-
-        let angle = Math.atan2(cy - mouseY, cx - mouseX);
-
-        // Add randomness so it's not predictable
-        const jitterRad = (Math.random() - 0.5) * (RANDOM_JITTER_DEG * Math.PI / 180);
-        angle += jitterRad;
-
-        return angle;
+    function clamp(val, min, max) {
+        return Math.max(min, Math.min(max, val));
     }
 
-    function dodge(mouseX, mouseY, isStrong = false) {
+    function dodgeFromMouse(mouseX, mouseY) {
         const rect = noBtn.getBoundingClientRect();
-        const cx = rect.left + rect.width / 2;
-        const cy = rect.top + rect.height / 2;
+        const btnCX = rect.left + rect.width / 2;
+        const btnCY = rect.top + rect.height / 2;
 
-        const dx = cx - mouseX;
-        const dy = cy - mouseY;
+        const dx = btnCX - mouseX;
+        const dy = btnCY - mouseY;
         const dist = Math.hypot(dx, dy);
 
-        if (dist > TRIGGER_DISTANCE && !isStrong) return;
+        if (dist > DODGE_DISTANCE) return;  // too far → no move
 
-        const angle = getDirectionAngle(mouseX, mouseY, isStrong);
+        // Direction: away from mouse + some random angle
+        let angle = Math.atan2(dy, dx);  // note: atan2(dy, dx) points away
+        angle += (Math.random() - 0.5) * (ANGLE_JITTER * Math.PI / 180);
 
-        // Stronger kick on direct hover
-        const jumpSize = isStrong ? HOVER_KICK : MAX_JUMP * (1 - dist / TRIGGER_DISTANCE);
-        const moveDist = Math.max(30, jumpSize); // minimum movement
+        // Move in that direction
+        const moveX = Math.cos(angle) * STEP_SIZE;
+        const moveY = Math.sin(angle) * STEP_SIZE;
 
-        let newLeft = rect.left + Math.cos(angle) * moveDist;
-        let newTop  = rect.top  + Math.sin(angle) * moveDist;
+        let newLeft = rect.left + moveX;
+        let newTop  = rect.top + moveY;
 
-        // Clamp to screen
-        newLeft = Math.max(EDGE_MARGIN, Math.min(window.innerWidth - rect.width - EDGE_MARGIN, newLeft));
-        newTop  = Math.max(EDGE_MARGIN, Math.min(window.innerHeight - rect.height - EDGE_MARGIN, newTop));
+        // Hard clamp — keep fully visible with margin
+        const maxLeft = window.innerWidth - rect.width - SAFE_MARGIN;
+        const maxTop  = window.innerHeight - rect.height - SAFE_MARGIN;
+
+        newLeft = clamp(newLeft, SAFE_MARGIN, maxLeft);
+        newTop  = clamp(newTop, SAFE_MARGIN, maxTop);
 
         noBtn.style.left = newLeft + 'px';
         noBtn.style.top  = newTop + 'px';
         noBtn.style.transform = 'none';
     }
 
-    // ─── Events ────────────────────────────────────────────────────
-    document.addEventListener('mousemove', (e) => {
-        dodge(e.clientX, e.clientY);
+    // ─── Core logic: constantly check mouse position ──────────────
+    let mouseX = window.innerWidth / 2;
+    let mouseY = window.innerHeight / 2;
+
+    document.addEventListener('mousemove', e => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+        dodgeFromMouse(mouseX, mouseY);
     });
 
-    // Big kick when cursor actually enters the button (classic prank feel)
-    noBtn.addEventListener('mouseenter', () => {
+    // Also run dodge check ~every frame when mouse is close (prevents entering)
+    function checkLoop() {
         const rect = noBtn.getBoundingClientRect();
-        const mx = rect.left + rect.width / 2;
-        const my = rect.top + rect.height / 2;
-        dodge(mx, my, true); // strong = true
-    });
+        const btnCX = rect.left + rect.width / 2;
+        const btnCY = rect.top + rect.height / 2;
+        const dist = Math.hypot(btnCX - mouseX, btnCY - mouseY);
 
-    // Prevent clicking No by also dodging on mousedown near it
-    noBtn.addEventListener('mousedown', (e) => {
+        if (dist < DODGE_DISTANCE + 40) {  // slightly larger zone for loop
+            dodgeFromMouse(mouseX, mouseY);
+        }
+        requestAnimationFrame(checkLoop);
+    }
+    checkLoop();
+
+    // Block any accidental click/hover attempts
+    noBtn.addEventListener('mouseover', e => {
         e.preventDefault();
-        const rect = noBtn.getBoundingClientRect();
-        dodge(e.clientX, e.clientY, true);
+        e.stopPropagation();
+        dodgeFromMouse(mouseX, mouseY);  // extra kick
     });
 
+    noBtn.addEventListener('mouseenter', () => {
+        dodgeFromMouse(mouseX, mouseY);
+    });
+
+    noBtn.addEventListener('click', e => {
+        e.preventDefault();
+        dodgeFromMouse(mouseX, mouseY);
+    });
+
+    // Yes works normally
     yesBtn.addEventListener('click', () => {
         container.querySelector('.question, .buttons').style.display = 'none';
         successPage.style.display = 'block';
         document.body.style.background = 'linear-gradient(to bottom, #fce4ec, #f8bbd0)';
     });
+
+    // Optional: tiny random wiggle when ignored for >3 seconds (uncomment if wanted)
+    /*
+    let lastDodgeTime = Date.now();
+    setInterval(() => {
+        if (Date.now() - lastDodgeTime > 3000) {
+            dodgeFromMouse(mouseX, mouseY);
+            lastDodgeTime = Date.now();
+        }
+    }, 4000);
+    */
 </script>
 </body>
 </html>
